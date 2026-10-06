@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MRF SMS — Buy Virtual Numbers</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  body { background: linear-gradient(135deg, #667eea, #764ba2); min-height: 100vh; padding: 20px; }
+  .container { max-width: 900px; margin: 0 auto; }
+  .header { text-align: center; color: white; padding: 30px 0; }
+  .header h1 { font-size: 32px; margin-bottom: 10px; }
+  .header p { opacity: 0.9; font-size: 14px; }
+  .card { background: white; border-radius: 20px; padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+  .card h2 { color: #333; margin-bottom: 15px; font-size: 20px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab { flex: 1; padding: 12px; background: #f1f5f9; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 14px; color: #475569; min-width: 100px; }
+  .tab.active { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+  .section { display: none; }
+  .section.active { display: block; }
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+  .service-btn { padding: 15px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; font-weight: 600; transition: 0.2s; text-align: center; font-size: 14px; color: #1e293b; }
+  .service-btn:hover { border-color: #667eea; background: #eef2ff; }
+  .countries-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-top: 15px; }
+  .country-btn { padding: 12px; background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; cursor: pointer; font-weight: 500; font-size: 13px; display: flex; justify-content: space-between; align-items: center; }
+  .country-btn:hover { border-color: #10b981; background: #ecfdf5; }
+  .btn { width: 100%; padding: 15px; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+  .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-green { background: linear-gradient(135deg, #10b981, #059669); }
+  .btn-red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+  .order-box { background: #f8fafc; padding: 20px; border-radius: 12px; margin-top: 15px; border-left: 4px solid #667eea; }
+  .order-box .row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+  .order-box .row .label { color: #64748b; }
+  .order-box .row .val { font-weight: 700; color: #1e293b; }
+  .otp-display { font-size: 42px; font-weight: 900; color: #10b981; text-align: center; letter-spacing: 8px; padding: 20px; background: #ecfdf5; border-radius: 12px; margin-top: 15px; }
+  .notice { padding: 12px 15px; border-radius: 10px; font-size: 13px; margin-bottom: 15px; }
+  .notice.info { background: #eff6ff; color: #1e40af; border-left: 4px solid #3b82f6; }
+  .notice.warn { background: #fef3c7; color: #92400e; border-left: 4px solid #f59e0b; }
+  .notice.success { background: #ecfdf5; color: #065f46; border-left: 4px solid #10b981; }
+  .hidden { display: none !important; }
+  .footer { text-align: center; color: white; opacity: 0.9; padding: 20px; font-size: 13px; }
+  input, select { width: 100%; padding: 12px 15px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; margin-bottom: 12px; outline: none; }
+  input:focus { border-color: #667eea; }
+  .steps { display: flex; gap: 5px; margin-bottom: 20px; }
+  .step { flex: 1; height: 4px; background: #e2e8f0; border-radius: 2px; }
+  .step.active { background: #667eea; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📱 MRF SMS</h1>
+    <p>Buy Virtual Numbers — WhatsApp • Telegram • Facebook • Instagram</p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('buy', this)">📱 Buy Number</button>
+    <button class="tab" onclick="switchTab('orders', this)">📦 My Orders</button>
+    <button class="tab" onclick="switchTab('topup', this)">💰 Add Balance</button>
+  </div>
+
+  <!-- BUY TAB -->
+  <div id="tab-buy" class="section active">
+    <div class="card">
+      <div class="steps">
+        <div class="step active" id="step1"></div>
+        <div class="step" id="step2"></div>
+        <div class="step" id="step3"></div>
+      </div>
+      <h2>1️⃣ Select Service</h2>
+      <div class="services-grid" id="servicesGrid"></div>
+    </div>
+    <div class="card hidden" id="countryCard">
+      <h2>2️⃣ Select Country</h2>
+      <div class="countries-grid" id="countriesGrid"></div>
+    </div>
+    <div class="card hidden" id="confirmCard">
+      <h2>3️⃣ Confirm Order</h2>
+      <div id="confirmContent"></div>
+    </div>
+  </div>
+
+  <!-- ORDERS TAB -->
+  <div id="tab-orders" class="section">
+    <div class="card">
+      <h2>📦 Your Orders</h2>
+      <div id="ordersList"><p style="color:#94a3b8; text-align:center; padding: 20px;">No orders yet</p></div>
+    </div>
+  </div>
+
+  <!-- TOPUP TAB -->
+  <div id="tab-topup" class="section">
+    <div class="card">
+      <h2>💰 Add Balance</h2>
+      <div class="notice info">
+        📞 <b>Easypaisa Number:</b> 03154571648<br>
+        👤 <b>Account Name:</b> Sabir Ali
+      </div>
+      <div class="notice warn">
+        ⚠️ Pehle Easypaisa se paisa bhejein, phir Transaction ID (TID) yahan daalein.
+        Admin Easypaisa app mein manually verify karega.
+      </div>
+      <input type="number" id="topupAmount" placeholder="Amount (min Rs.100)" min="100">
+      <input type="text" id="topupTid" placeholder="Transaction ID (TID)">
+      <input type="text" id="topupContact" placeholder="Your WhatsApp / Telegram number">
+      <button class="btn btn-green" onclick="submitTopup(this)">💳 Submit Top-Up Request</button>
+      <div id="topupResult" style="margin-top: 15px;"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>⚡ Cancel: 10 sec | Auto-expiry: 26 min</p>
+    <p style="margin-top: 5px;"><a href="/admin" style="color: white;">🔐 Admin Panel</a></p>
+  </div>
+</div>
+
+<script>
+const SERVICES = [
+  { code: "whatsapp", name: "WhatsApp", icon: "💬" },
+  { code: "telegram", name: "Telegram", icon: "✈️" },
+  { code: "facebook", name: "Facebook", icon: "📘" },
+  { code: "instagram", name: "Instagram", icon: "📷" },
+  { code: "tiktok", name: "TikTok", icon: "🎵" },
+  { code: "twitter", name: "Twitter", icon: "🐦" },
+  { code: "snapchat", name: "Snapchat", icon: "👻" },
+  { code: "google", name: "Google", icon: "🔍" },
+  { code: "amazon", name: "Amazon", icon: "📦" },
+  { code: "openai", name: "OpenAI", icon: "🤖" }
+];
+
+const FALLBACK = [
+  { name: "USA", flag: "🇺🇸", countryId: 187, price: 150 },
+  { name: "UK", flag: "🇬🇧", countryId: 16, price: 130 },
+  { name: "India", flag: "🇮🇳", countryId: 22, price: 100 },
+  { name: "Pakistan", flag: "🇵🇰", countryId: 66, price: 120 },
+  { name: "Indonesia", flag: "🇮🇩", countryId: 6, price: 90 },
+  { name: "Russia", flag: "🇷🇺", countryId: 0, price: 80 }
+];
+
+let state = { service: null, country: null, price: 0, order: null, poll: null };
+
+async function api(path, opts = {}) {
+  const r = await fetch(path, {
+    ...opts,
+    headers: { "Content-Type": "application/json", ...(opts.headers || {}) }
+  });
+  return r.json();
+}
+
+function switchTab(t, el) {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  document.querySelectorAll(".section").forEach(x => x.classList.remove("active"));
+  el.classList.add("active");
+  document.getElementById(`tab-${t}`).classList.add("active");
+  if (t === "orders") renderOrders();
+}
+
+function renderServices() {
+  document.getElementById("servicesGrid").innerHTML = SERVICES.map(s =>
+    `<button class="service-btn" onclick="selectService('${s.code}','${s.name}')">
+      <div style="font-size: 24px; margin-bottom: 5px;">${s.icon}</div>${s.name}
+    </button>`
+  ).join("");
+}
+
+async function selectService(code, name) {
+  state.service = { code, name };
+  document.getElementById("step2").classList.add("active");
+  document.getElementById("countryCard").classList.remove("hidden");
+  const grid = document.getElementById("countriesGrid");
+  grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#94a3b8;">⏳ Loading countries...</p>';
+
+  let data = {};
+  try { data = await api(`/api/countries/${code}`); } catch(e){}
+  let countries = data.countries && data.countries.length ? data.countries : FALLBACK;
+
+  grid.innerHTML = countries.slice(0, 30).map(c =>
+    `<button class="country-btn" onclick='selectCountry(${JSON.stringify(c).replace(/'/g, "&apos;")})'>
+      <span>${c.flag || "🌍"} ${c.name}</span>
+      <span style="color:#10b981;font-weight:700;">Rs.${c.price || "N/A"}</span>
+    </button>`
+  ).join("");
+
+  document.getElementById("countryCard").scrollIntoView({ behavior: "smooth" });
+}
+
+function selectCountry(c) {
+  state.country = c;
+  state.price = c.price || 200;
+  document.getElementById("step3").classList.add("active");
+  document.getElementById("confirmCard").classList.remove("hidden");
+
+  document.getElementById("confirmContent").innerHTML = `
+    <div class="order-box">
+      <div class="row"><span class="label">Service</span><span class="val">${state.service.name}</span></div>
+      <div class="row"><span class="label">Country</span><span class="val">${c.flag || "🌍"} ${c.name}</span></div>
+      <div class="row"><span class="label">Price</span><span class="val" style="color:#667eea;">Rs.${state.price}</span></div>
+    </div>
+    <div class="notice info" style="margin-top: 15px;">
+      ⚡ <b>Rules:</b><br>
+      • 10 sec mein cancel kar sakte hain<br>
+      • 26 min baad auto-expire + refund
+    </div>
+    <button class="btn btn-green" onclick="buyNow(this)">✅ Buy Now for Rs.${state.price}</button>
+  `;
+  document.getElementById("confirmCard").scrollIntoView({ behavior: "smooth" });
+}
+
+async function buyNow(btn) {
+  btn.disabled = true;
+  btn.innerHTML = '⏳ Buying...';
+
+  const order = await api("/api/buy", {
+    method: "POST",
+    body: JSON.stringify({
+      service: state.service.code,
+      countryId: state.country.countryId
+    })
+  });
+
+  if (order.error || !order.orderId) {
+    document.getElementById("confirmContent").innerHTML = `
+      <div class="notice warn">❌ ${order.error || "Number not available"}</div>
+      <button class="btn" onclick="location.reload()">🔙 Try Again</button>
+    `;
+    return;
+  }
+
+  state.order = {
+    orderId: order.orderId,
+    phoneNumber: order.phoneNumber,
+    status: order.status || "pending",
+    service: state.service.name,
+    country: state.country.name,
+    price: state.price
+  };
+  saveOrder(state.order);
+  renderActiveOrder();
+  startPolling();
+}
+
+function renderActiveOrder() {
+  const o = state.order;
+  document.getElementById("confirmContent").innerHTML = `
+    <div class="notice success">🎉 Number Ready!</div>
+    <div class="order-box">
+      <div class="row"><span class="label">📞 Number</span><span class="val" style="font-size:18px;color:#667eea;">${o.phoneNumber}</span></div>
+      <div class="row"><span class="label">Service</span><span class="val">${o.service}</span></div>
+      <div class="row"><span class="label">Country</span><span class="val">${o.country}</span></div>
+      <div class="row"><span class="label">Price</span><span class="val">Rs.${o.price}</span></div>
+      <div class="row"><span class="label">Status</span><span class="val" id="orderStatus">${o.status}</span></div>
+    </div>
+    <div class="notice info">
+      ⚡ <b>Steps:</b><br>
+      1. Is number par apna account verify karein<br>
+      2. "Check OTP" dabakar OTP lein<br>
+      3. 26 min mein OTP na aaye toh auto-cancel + refund
+    </div>
+    <button class="btn btn-green" onclick="checkOTP()">📨 Check OTP</button>
+    <button class="btn btn-red" onclick="cancelOrder()" id="cancelBtn" style="margin-top:10px;">🔄 Cancel (<span id="cd">10</span>s)</button>
+    <div id="otpArea"></div>
+  `;
+  let s = 10;
+  const t = setInterval(() => {
+    s--;
+    const el = document.getElementById("cd");
+    if (el) el.textContent = s;
+    if (s <= 0) {
+      clearInterval(t);
+      const b = document.getElementById("cancelBtn");
+      if (b) { b.disabled = true; b.textContent = "⏱ Cancel window closed"; b.style.opacity = "0.5"; }
+    }
+  }, 1000);
+}
+
+function startPolling() {
+  if (state.poll) clearInterval(state.poll);
+  state.poll = setInterval(async () => {
+    if (!state.order) return;
+    const r = await api(`/api/order/${state.order.orderId}`);
+    const s = document.getElementById("orderStatus");
+    if (s) s.textContent = r.status;
+    if (r.otpCode) {
+      clearInterval(state.poll);
+      document.getElementById("otpArea").innerHTML = `
+        <div class="otp-display">${r.otpCode}</div>
+        <div class="notice success" style="margin-top: 10px;">🎉 OTP Received! Verify karein.</div>
+      `;
+    }
+  }, 5000);
+}
+
+async function checkOTP() {
+  const r = await api(`/api/order/${state.order.orderId}`);
+  if (r.otpCode) {
+    document.getElementById("otpArea").innerHTML = `<div class="otp-display">${r.otpCode}</div>`;
+  } else {
+    alert("⏳ Abhi OTP nahi aaya. Thodi der baad try karein.");
+  }
+}
+
+async function cancelOrder() {
+  const r = await api(`/api/cancel/${state.order.orderId}`, { method: "POST" });
+  if (r.refunded) {
+    alert("✅ Cancel ho gaya! Refund process mein hai.");
+    if (state.poll) clearInterval(state.poll);
+    location.reload();
+  } else {
+    alert("❌ Cancel fail: " + (r.error || "Unknown"));
+  }
+}
+
+let orders = JSON.parse(localStorage.getItem("orders") || "[]");
+function saveOrder(o) {
+  orders.unshift(o);
+  orders = orders.slice(0, 50);
+  localStorage.setItem("orders", JSON.stringify(orders));
+}
+function renderOrders() {
+  const el = document.getElementById("ordersList");
+  if (!orders.length) { el.innerHTML = '<p style="color:#94a3b8;text-align:center;padding:20px;">No orders yet</p>'; return; }
+  el.innerHTML = orders.map(o => `
+    <div class="order-box" style="margin-bottom:10px;">
+      <div class="row"><span class="label">🆔 Order</span><span class="val">${o.orderId}</span></div>
+      <div class="row"><span class="label">📱 Service</span><span class="val">${o.service}</span></div>
+      <div class="row"><span class="label">📞 Number</span><span class="val">${o.phoneNumber}</span></div>
+      <div class="row"><span class="label">💰 Price</span><span class="val">Rs.${o.price}</span></div>
+    </div>
+  `).join("");
+}
+
+async function submitTopup(btn) {
+  const amount = document.getElementById("topupAmount").value;
+  const tid = document.getElementById("topupTid").value;
+  const contact = document.getElementById("topupContact").value;
+  const res = document.getElementById("topupResult");
+
+  if (!amount || !tid) {
+    res.innerHTML = '<div class="notice warn">❌ Amount aur Transaction ID dono zaroori hain</div>';
+    return;
+  }
+  if (parseInt(amount) < 100) {
+    res.innerHTML = '<div class="notice warn">❌ Minimum Rs.100</div>';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "⏳ Submitting...";
+
+  const r = await api("/api/topup", {
+    method: "POST",
+    body: JSON.stringify({ amount: parseInt(amount), txnId: tid, userContact: contact })
+  });
+
+  btn.disabled = false;
+  btn.textContent = "💳 Submit Top-Up Request";
+
+  if (r.success) {
+    res
