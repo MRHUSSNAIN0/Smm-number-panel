@@ -283,7 +283,7 @@ setInterval(async () => {
 }, 60000);
 
 // ==================== START ====================
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`\n✅ Website: http://localhost:${PORT}`);
   console.log(`🎛️  Admin:   http://localhost:${PORT}/admin`);
   console.log(`🔑 Login:   admin / Ilovemom95@\n`);
