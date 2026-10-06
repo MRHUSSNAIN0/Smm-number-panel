@@ -1,0 +1,21 @@
+{
+  "name": "mrf-website",
+  "version": "1.0.0",
+  "description": "MRF SMS Virtual Number Website + Admin Panel",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Sabir Ali",
+  "license": "MIT"
+}
